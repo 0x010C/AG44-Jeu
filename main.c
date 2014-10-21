@@ -175,5 +175,54 @@ int main(int argc, char **argv)
 	for(i=0;i<nbPlaces;i++)
 		printf("--> Place %2d est dans le Level %2d\n", i, GL[i]);
 
+
+	/*
+	 * Création de la matrice réduite
+	 */
+
+	/* Allocation et initialisation de la matrice réduite */
+	N = (int**) malloc(sizeof(int*)*nbLevels);
+	for(i=0; i<nbLevels; i++)
+	{
+		N[i] = (int*) malloc(sizeof(int)*nbLevels);
+		for(j=0; j<nbLevels; j++)
+			N[i][j] = 0;
+	}
+
+	/* Remplissage de la-dite matrice */
+	for(i=0; i<nbPlaces; i++)
+	{
+		for(j=0; j<nbPlaces; j++)
+		{
+			if(A[i][j] == 1)
+			{
+				N[GL[i]][GL[j]]++;
+			}
+		}
+	}
+
+	printf("\n\n=================\n Matrice reduite\n=================\n");
+	for(i=0; i<nbLevels; i++)
+	{
+		for(j=0; j<nbLevels; j++)
+			printf("%2d ", N[i][j]);
+		printf("\n");
+	}
+
+	/*
+	 * Libération de la mémoire allouée
+	 */
+
+	for(i=0; i<nbPlaces; i++)
+		free(A[i]);
+	free(A);
+	for(i=0; i<nbLevels; i++)
+		free(N[i]);
+	free(N);
+	free(GL);
+        free(listePositif);
+        free(listeNegatif);
+        free(listeAVisiter);
+
 	return 0;
 }
