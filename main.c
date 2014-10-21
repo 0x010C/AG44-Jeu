@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
-#include <math.h>
+#include <unistd.h>
+#include <time.h>
 
 void fifo_add(int *actuel, int nbValeurs, int valeur)
 {
@@ -208,6 +208,46 @@ int main(int argc, char **argv)
 			printf("%2d ", N[i][j]);
 		printf("\n");
 	}
+
+
+	/*
+	 * Calcul du plus long chemin
+	 */
+
+	/* TODO */
+
+
+	/*
+	 * Generation du graph
+	 */
+
+	/* Création du fichier */
+	fichier = fopen("graph.dot","w");
+	fprintf(fichier, "digraph graphAG44\n{\n");
+
+        /* Enregistrement des Niveaux */
+	srand(time(NULL));
+	for(i=0; i<nbLevels; i++)
+	{
+		fprintf(fichier, "\tsubgraph sub%d\n\t{\n\t\tnode [style=filled,color=\"#%2x%2x%2x\"];\n", i,rand()%225, rand()%225, rand()%225);
+		for(j=0; j<nbPlaces; j++)
+			if(GL[j] == i)
+				fprintf(fichier, "\t\t%d;\n", j);
+		fprintf(fichier, "\t}\n\n");
+	}
+
+	/* Enregistrement des Places */
+	for(i=0; i<nbPlaces; i++)
+		for(j=0; j<nbPlaces; j++)
+			if(A[i][j] == 1)
+				fprintf(fichier, "\t%d -> %d;\n", i, j);
+	fprintf(fichier, "}");
+	fclose(fichier);
+	
+	/* Appel au programme dot pour generer l'image a partir du fichier */
+	if(fork() == 0)
+		execlp("dot", "dot", "-Tpng", "graph.dot", "-o", "graph.png", NULL);
+
 
 	/*
 	 * Libération de la mémoire allouée
