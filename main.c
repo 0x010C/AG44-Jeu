@@ -218,7 +218,7 @@ int main(int argc, char **argv)
 
 
 	/*
-	 * Generation du graph
+	 * Generation d'une image du graph (idée par Jérome BOURSIER, merci à lui !)
 	 */
 
 	/* Création du fichier */
