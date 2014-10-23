@@ -49,10 +49,20 @@ int fifo_isEmpty(int *actuel, int nbValeurs)
 	return 1;
 }
 
+int fifo_count(int *actuel, int nbValeurs)
+{
+	int i;
+	for(i=0;i<nbValeurs;i++)
+		if(actuel[i] == -1)
+			return i;
+	return nbValeurs;
+}
+
 int main(int argc, char **argv)
 {
 	int **A = NULL;
 	int **N = NULL;
+	int **PLC = NULL;
 	int *GL = NULL;
 	FILE *fichier = NULL;
 	int nbPlaces=0, nbLevels=0;
@@ -201,7 +211,7 @@ int main(int argc, char **argv)
 		}
 	}
 
-	printf("\n\n=================\n Matrice reduite\n=================\n");
+	printf("\n=================\n Matrice reduite\n=================\n");
 	for(i=0; i<nbLevels; i++)
 	{
 		for(j=0; j<nbLevels; j++)
@@ -211,11 +221,55 @@ int main(int argc, char **argv)
 
 
 	/*
-	 * Calcul du plus long chemin
+	 * Calcul du plus long chemin entre le premier et le dernier niveau
 	 */
 
-	/* TODO */
+	/* Allocation et Reallocation d'une partie de mémoire précédement utilisé et mise à zéro */
+	listeAVisiter = (int*) realloc(listeAVisiter, sizeof(int)*nbLevels);
+	PLC = (int**) malloc(sizeof(int*)*nbLevels);
+	for(i=0; i<nbLevels; i++)
+	{
+		listeAVisiter[i] = -1;
+		PLC[i] = (int*) malloc(sizeof(int)*nbLevels);
+		for(j=0; j<nbLevels; j++)
+			PLC[i][j] = -1;
+	}	
 
+	/* Application de l'algo de calcul du plus long chemin */
+	fifo_add(listeAVisiter, nbLevels, GL[0]);
+	while(fifo_isEmpty(listeAVisiter, nbLevels) == 0)
+	{
+		buf = fifo_pop(listeAVisiter, nbLevels);
+		for(i=0; i<nbLevels; i++)
+			if(N[buf][i] >= 1 && buf != i)
+			{
+				if(fifo_count(PLC[buf], nbLevels)+1 > fifo_count(PLC[i], nbLevels))
+				{
+					for(j=0; j<nbLevels; j++)
+						PLC[i][j] = PLC[buf][j];
+					fifo_add(PLC[i], nbLevels, buf);
+					fifo_add(listeAVisiter, nbLevels, i);
+				}
+			}
+
+	}
+
+	printf("\n==================\n Plus long chemin\n================\n");
+	if(fifo_isEmpty(PLC[GL[nbPlaces-1]], nbLevels) == 0)
+		k = GL[nbPlaces-1];
+	else
+	{
+		k = 0;
+		for(i=1; i<nbLevels; i++)
+			if(fifo_count(PLC[i], nbLevels) > fifo_count(PLC[k], nbLevels))
+				k = i;
+	}
+	printf("--> { ");
+	for(i=0; i<nbLevels && PLC[k][i] != -1; i++)
+	{
+		printf("%d ; ", PLC[k][i]);
+	}
+	printf("%d }\n", k);
 
 	/*
 	 * Generation d'une image du graph (idée par Jérome BOURSIER, merci à lui !)
@@ -225,7 +279,7 @@ int main(int argc, char **argv)
 	fichier = fopen("graph.dot","w");
 	fprintf(fichier, "digraph graphAG44\n{\n");
 
-        /* Enregistrement des Niveaux */
+	/* Enregistrement des Niveaux */
 	srand(time(NULL));
 	for(i=0; i<nbLevels; i++)
 	{
@@ -243,7 +297,7 @@ int main(int argc, char **argv)
 				fprintf(fichier, "\t%d -> %d;\n", i, j);
 	fprintf(fichier, "}");
 	fclose(fichier);
-	
+
 	/* Appel au programme dot pour generer l'image a partir du fichier */
 	if(fork() == 0)
 		execlp("dot", "dot", "-Tpng", "graph.dot", "-o", "graph.png", NULL);
@@ -257,12 +311,16 @@ int main(int argc, char **argv)
 		free(A[i]);
 	free(A);
 	for(i=0; i<nbLevels; i++)
+	{
 		free(N[i]);
+		free(PLC[i]);
+	}
 	free(N);
+	free(PLC);
 	free(GL);
-        free(listePositif);
-        free(listeNegatif);
-        free(listeAVisiter);
+	free(listePositif);
+	free(listeNegatif);
+	free(listeAVisiter);
 
 	return 0;
 }
