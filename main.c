@@ -143,7 +143,7 @@ int main(int argc, char **argv)
 	/* On va effectuer la recherche depuis chaque point du graph (sauf si elle est déjà dans un level) */
 	for(i=0; i<nbPlaces; i++)
 	{
-		printf("================================\n Research starting from the place %2d \n================================\n", i);
+		printf("=====================================\n Research starting from the place %2d \n=====================================\n", i);
 		if(GL[i] == -1)
 		{
 			/* Remplissage de la liste positive */
@@ -207,7 +207,7 @@ int main(int argc, char **argv)
 			printf("--> Already in the level n°%2d\n\n", GL[i]);
 	}
 
-	printf("\n\n========\n Levels\n========\n");
+	printf("\n\n\n========\n Levels\n========\n");
 	for(i=0;i<nbPlaces;i++)
 		printf("--> Place %2d is in the Level n°%2d\n", i, GL[i]);
 
@@ -237,7 +237,7 @@ int main(int argc, char **argv)
 		}
 	}
 
-	printf("\n=================\n Reduced Matrix\n=================\n");
+	printf("\n================\n Reduced Matrix\n================\n");
 	for(i=0; i<nbLevels; i++)
 	{
 		for(j=0; j<nbLevels; j++)
@@ -280,7 +280,7 @@ int main(int argc, char **argv)
 
 	}
 
-	printf("\n==================\n Longest path\n================\n");
+	printf("\n==============\n Longest path\n==============\n");
 	if(fifo_isEmpty(PLC[GL[nbPlaces-1]], nbLevels) == 0)
 		k = GL[nbPlaces-1];
 	else
