@@ -211,6 +211,24 @@ int main(int argc, char **argv)
 	for(i=0;i<nbPlaces;i++)
 		printf("--> Place %2d is in the Level n°%2d\n", i, GL[i]);
 
+	printf("\n");
+	for(i=0;i<nbLevels;i++)
+	{
+		k = 0;
+		printf("{");
+		for(j=0; j<nbPlaces; j++)
+			if(GL[j] == i)
+			{
+				if(k == 1)
+					printf(";");
+				else
+					k = 1;
+				printf("%2d", j);
+			}
+		printf(" } ");
+	}
+	printf("\n");
+
 
 	/*
 	 * Création de la matrice réduite
@@ -328,6 +346,8 @@ int main(int argc, char **argv)
 	/* Appel au programme dot pour generer l'image a partir du fichier */
 	if(fork() == 0)
 		execlp("dot", "dot", "-Tpng", "graph.dot", "-o", "graph.png", NULL);
+        if(fork() == 0)
+                execlp("eog", "eog", "graph.png", NULL);
 
 
 	/*
