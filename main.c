@@ -143,7 +143,7 @@ int main(int argc, char **argv)
 	/* On va effectuer la recherche depuis chaque point du graph (sauf si elle est déjà dans un level) */
 	for(i=0; i<nbPlaces; i++)
 	{
-		printf("================================\n Recherche à partir du noeud %2d \n================================\n", i);
+		printf("================================\n Research starting from the place %2d \n================================\n", i);
 		if(GL[i] == -1)
 		{
 			/* Remplissage de la liste positive */
@@ -161,8 +161,8 @@ int main(int argc, char **argv)
 						}
 					}
 			}
-			printf("--> Elements dans la liste positive :\n    ");
-			for(j=0;j<nbPlaces;j++)
+			printf("--> Places in the '+' list :\n    ");
+			for(j=0;j<fifo_count(listePositif, nbPlaces);j++)
 				printf("%2d ", listePositif[j]);
 			printf("\n");
 
@@ -177,8 +177,8 @@ int main(int argc, char **argv)
 						fifo_add(listeAVisiter, nbPlaces, j);
 
 			}
-			printf("--> Elements dans la liste negative :\n    ");
-			for(j=0;j<nbPlaces;j++)
+			printf("--> Places in the '-' list :\n    ");
+                        for(j=0;j<fifo_count(listeNegatif, nbPlaces);j++)
 				printf("%2d ", listeNegatif[j]);
 			printf("\n");
 
@@ -193,7 +193,7 @@ int main(int argc, char **argv)
 						printf("%2d ", listePositif[j]);
 					}
 			}
-			printf("\n--> Enregistrement du niveau : %2d\n\n", nbLevels);
+			printf("\n--> Saving them in the new level n°%2d\n\n", nbLevels);
 			nbLevels++;
 
 			/* Vidage des deux listes */
@@ -204,12 +204,12 @@ int main(int argc, char **argv)
 			}
 		}
 		else
-			printf("--> Déjà dans le niveau : %2d\n\n", GL[i]);
+			printf("--> Already in the level n°%2d\n\n", GL[i]);
 	}
 
 	printf("\n\n========\n Levels\n========\n");
 	for(i=0;i<nbPlaces;i++)
-		printf("--> Place %2d est dans le Level %2d\n", i, GL[i]);
+		printf("--> Place %2d is in the Level n°%2d\n", i, GL[i]);
 
 
 	/*
@@ -237,7 +237,7 @@ int main(int argc, char **argv)
 		}
 	}
 
-	printf("\n=================\n Matrice reduite\n=================\n");
+	printf("\n=================\n Reduced Matrix\n=================\n");
 	for(i=0; i<nbLevels; i++)
 	{
 		for(j=0; j<nbLevels; j++)
@@ -280,7 +280,7 @@ int main(int argc, char **argv)
 
 	}
 
-	printf("\n==================\n Plus long chemin\n================\n");
+	printf("\n==================\n Longest path\n================\n");
 	if(fifo_isEmpty(PLC[GL[nbPlaces-1]], nbLevels) == 0)
 		k = GL[nbPlaces-1];
 	else
@@ -296,6 +296,7 @@ int main(int argc, char **argv)
 		printf("%d ; ", PLC[k][i]);
 	}
 	printf("%d }\n", k);
+
 
 	/*
 	 * Generation d'une image du graph (idée par Jérome BOURSIER, merci à lui !)
